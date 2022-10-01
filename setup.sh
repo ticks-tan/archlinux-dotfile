@@ -20,12 +20,15 @@ website="github.com"
 ## 各个Github仓库链接，如果有镜像可以在这里
 ## powerline字体
 powerline_font="https://github.com/powerline/fonts.git"
+# neovim最低版本(插件要求)
+nvim_min_version="0.7.2"
 ## neovim源码
 nvim_source="https://github.com/neovim/neovim"
 nvim_build_type="Release"
 nvim_install_prefix="/usr/local"
 
 
+## 按任意键继续
 function get_char() {
 	SAVEDSTTY=`stty -g`
 	stty -echo
@@ -38,6 +41,15 @@ function get_char() {
 function pause() {
 	echo -n "按任意键继续. . ."
 	ch=`get_char`
+}
+
+## 获取脚本文件所在目录
+function get_real_path() {
+	cur_dir="$(pwd)"
+	cd "$(dirname "${0}")"
+	p="$(pwd)"
+	cd "${cur_dir}"
+	echo "$p"
 }
 
 ## 检查Github网络连通
@@ -83,9 +95,10 @@ function show_menu() {
 	echo "=========== Linux Code Config =========="
 	echo ">> 1. 安装PowerLine字体(可以显示图标字符，避免某些插件不能显示)."
 	echo ">> 2. 安装bash-powerline终端PS显示(简洁好看)."
-	echo ">> 3. 安装nvim(源码安装)."
-	echo ">> 4. 配置nvim(美化+LSP)."
+	echo ">> 3. 配置nvim(美化+LSP)."
+	echo ">> 4. 更新工具(git fetch)."
 	echo ">> 0. 退出脚本."
+	echo ">> 当前工作目录：$(pwd)."
 	echo "========================================"
 }
 
@@ -169,7 +182,7 @@ function menu_bash_powerline() {
 }
 
 ## 源码安装nvim
-function menu_install_nvim() {
+function install_nvim_source() {
 	if check_cmd nvim ; then
 		wprint "检查到系统已安装nvim！\n是否要卸载系统nvim源码编译最新nvim？ \n"
 		wprint "卸载原系统nvim可能会破坏某些软件依赖，请谨慎选择，出现问题概不负责！！！\n"
@@ -249,6 +262,22 @@ function menu_install_nvim() {
 
 ## 配置nvim
 function menu_config_nvim() {
+	# 检查neovim是否存在
+	if ! check_cmd nvim ; then
+		wprint "未检测到neovim，是否需要从源码编译安装(更推荐自己进行安装呢)(安装[Y/y]，不安装[N/n]<default>): "
+		read flag
+		if [[ "y${flag}" == "yy" || "y${flag}" == "yY" ]]; then
+			wprint "你选择了源码安装，安装可能会失败，请知晓！\n"
+			if ! install_nvim_source ; then
+				return 1
+			fi
+		fi
+		return 0
+	fi
+	# 检查nvim版本是否达到要求
+	if ! nvim_version_check ${nvim_min_version} ; then
+		return 1
+	fi
 	if [[ -e "${home}/.config/nvim/init.lua" || -e "${home}/.config/nvim/init.vim" ]]; then
 		wprint "检查到已有neovim配置，是否需要备份原有配置使用新的配置?\n"
 		dprint "请选择(使用新配置[Y/y]<默认>,使用原配置[N/n])："
@@ -268,19 +297,19 @@ function menu_config_nvim() {
 	dprint "检查Github连通性. . .\n"
 	if ! check_github ; then
 		eprint "Github无法连接，取消配置！\n"
-		return 1
+		return 2
 	fi
 	dprint "安装neovim插件管理工具. . ."
 	if ! $shell -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' ; then
 		eprint "安装插件工具失败，停止配置！\n"
-		return 2
+		return 3
 	fi
 	if [ -e "./nvim" ]; then
 		dprint "拷贝配置文件. . ."
 		rm -r ${home}/.config/nvim && cp -r ./nvim ${home}/.config/
 	else
 		eprint "配置文件丢失，停止配置. . .\n"
-		return 3
+		return 4
 	fi
 	dprint "将在5s打开neovim安装插件并启用，第一次启动会提示模块加载失败，请忽略！\n"
 	dprint "如果下载插件出现问题，请在之后打开neovim后普通模式下手动执行[:PlugInstall]来安装插件！\n"
@@ -294,10 +323,44 @@ function menu_config_nvim() {
 	return 0
 }
 
+# 更新工具
+function menu_update() {
+	if ! git fetch ; then
+		eprint "更新失败×_×！\n"
+		return 1
+	fi
+	sprint "脚本更新成功，将在3s后重启！\n"
+	sleep 3s
+	exit 0
+	return 0
+}
 
+# 判断neovim版本号
+function nvim_version_check() {
+	version=$(nvim --version | grep NVIM | awk -Fv '{ print $2 }')
+	if [ "v${version}" != "v" ]; then
+		if [ "$(echo "${version} ${1}" | tr " " "\n" | sort -rV | head -n 1)" != "$1" ]; then
+			eprint "当前neovim版本为: ${version}，要求最低版本号为：${1}\n"
+			return 1
+		fi
+	fi
+	return 0
+}
+
+# 进入脚本根目录
+cd "$(dirname ${0})"
+
+## 检查包管理工具
+if ! check_cmd apt ; then
+	wprint "检测到系统似乎没有使用 apt 作为包管理工具！\n"
+	dprint ">> 请输入系统包管理工具安装命令(default:${pm_install})："
+	read pm_install
+	dprint ">> 请输入系统包管理工具卸载命令(default:${pm_uninstall}): "
+	read pm_uninstall
+fi
 
 if ! check_prepare ; then
-	eprint "前置条件未满足，无法继续使用!\n"
+	eprint "某些软件包没有安装，无法继续使用！\n"
 	pause
 	exit 1
 fi
@@ -314,9 +377,9 @@ do
 	elif [ "$flag" == "2" ]; then
 		menu_bash_powerline
 	elif [ "$flag" == "3" ]; then
-		menu_install_nvim
-	elif [ "$flag" == "4" ]; then
 		menu_config_nvim
+	elif [ "$flag" == "4" ]; then
+		menu_update
 	else
 		eprint "输入错误\n"
 	fi
