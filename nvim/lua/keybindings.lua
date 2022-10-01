@@ -18,11 +18,11 @@ local nmap = function(key, cmd)
 		keymap('n', key, cmd, default_opt)
 end
 
-local imap = function(keys)
+local imap = function(key, cmd)
 		keymap('i', key, cmd, default_opt)
 end
 
-local cmap = function(keys)
+local cmap = function(key, cmd)
 		keymap('c', key, cmd, default_opt)
 end
 

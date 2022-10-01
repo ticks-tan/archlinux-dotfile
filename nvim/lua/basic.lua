@@ -5,6 +5,10 @@
 -- vim.g.xxx	vim全局变量，一般用于设置插件需要的变量
 -- vim.opt.xxx	相当于vimscript中的set xxx
 
+-- 自定义命令
+-- 允许非sudo状态下强制写入
+vim.cmd[[command SuWrite :execute ':w !sudo tee %']]
+
 -- set utf-8
 vim.g.encodeing = "UTF-8"
 vim.o.fileencoding = 'utf-8'
@@ -18,7 +22,6 @@ vim.wo.signcolumn = "yes"
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
-vim.opt.autointent = 'yes'
 vim.o.shiftround = true
 -- 搜索大小写不敏感（除非包含大写）
 vim.o.ignorecase = true

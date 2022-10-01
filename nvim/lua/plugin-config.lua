@@ -11,8 +11,13 @@ Load_Module('plugins/nvim-tree')
 Load_Module('plugins/nvim-bufferline')
 -- 加载状态栏
 Load_Module('plugins/lualine')
+-- 区间高亮
+Load_Module('plugins/range-highlight')
 
 -- 配置LSP和补全
 -- Load_Module('lsp')
 Load_Module('lsp')
+
+-- 项目编译
+Load_Module('plugins/asynctask')
 

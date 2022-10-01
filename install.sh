@@ -4,10 +4,10 @@
 shell=/bin/bash
 ## 用户根目录
 home=$HOME
-## 包安装命令
-pm_install="apt-get install "
+## 包安装命令(后有空格!)
+pm_install="apt-get -y install "
 ## 包卸载工具
-pm_uninstall="apt-get uninstall"
+pm_uninstall="apt-get purge "
 ## 编译nvim前置软件包，详情可到 
 ## [https://github.com/neovim/neovim/wiki/Installing-Neovim#install-from-source]
 ## 查看

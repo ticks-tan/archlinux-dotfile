@@ -1,3 +1,4 @@
+
 -- 设置别名，方便书写
 local Plug = vim.fn['plug#']
 
@@ -11,6 +12,9 @@ Plug 'yianwillis/vimcdoc'
 Plug 'kyazdani42/nvim-web-devicons'	-- optional(icon support)
 -- nvim 目录树
 Plug 'kyazdani42/nvim-tree.lua'
+-- 命令行选择多行时高亮显示
+Plug 'winston0410/cmd-parser.nvim'
+Plug 'winston0410/range-highlight.nvim'
 -- nvim buffer tab (like vscode)
 Plug('akinsho/bufferline.nvim', { tag = 'v2.*' })
 -- 快速替换
@@ -35,5 +39,8 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lualine/lualine.nvim'
 -- 主题(tokyonight)
 Plug('folke/tokyonight.nvim', { branch = 'main' })
+-- 类似vscode的项目编译方案
+Plug 'skywind3000/asynctasks.vim'
+Plug 'skywind3000/asyncrun.vim'
 
 vim.call('plug#end')
