@@ -42,5 +42,7 @@ Plug('folke/tokyonight.nvim', { branch = 'main' })
 -- 类似vscode的项目编译方案
 Plug 'skywind3000/asynctasks.vim'
 Plug 'skywind3000/asyncrun.vim'
+-- 自动生成ctags
+Plug 'ludovicchabant/vim-gutentags'
 
 vim.call('plug#end')

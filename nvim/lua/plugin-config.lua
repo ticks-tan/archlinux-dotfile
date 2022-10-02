@@ -1,23 +1,23 @@
-require('tools')
 -- 开启web图标(美化)
-Load_Module('plugins/nvim-web-devicons')
+require('plugins.nvim-web-devicons')
 -- 快速替换
-Load_Module('plugins/nvim-surround')
+require('plugins.nvim-surround')
 -- 配置主题
 vim.cmd[[colorscheme tokyonight-storm]]
 -- 目录树(nvim-tree)
-Load_Module('plugins/nvim-tree')
+require('plugins.nvim-tree')
 -- tab栏(bufferline)
-Load_Module('plugins/nvim-bufferline')
+require('plugins.nvim-bufferline')
 -- 加载状态栏
-Load_Module('plugins/lualine')
+require('plugins.lualine')
 -- 区间高亮
-Load_Module('plugins/range-highlight')
+require('plugins.range-highlight')
 
 -- 配置LSP和补全
--- Load_Module('lsp')
-Load_Module('lsp')
+-- require('lsp')
+require('lsp')
 
 -- 项目编译
-Load_Module('plugins/asynctask')
-
+require('plugins.asynctask')
+-- 自动生成tags
+require("plugins.nvim-gutentags")
