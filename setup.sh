@@ -300,13 +300,15 @@ function menu_config_nvim() {
 		eprint "Github无法连接，取消配置！\n"
 		return 2
 	fi
-	dprint "安装neovim插件管理工具. . ."
-	if ! $shell -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' ; then
-		eprint "安装插件工具失败，停止配置！\n"
-		return 3
+	if [ ! -e "${home}/.local/share/nvim/site/autoload/plug.vim" ]; then
+		dprint "安装neovim插件管理工具. . .\n"
+		if ! $shell -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' ; then
+			eprint "安装插件工具失败，停止配置！\n"
+			return 3
+		fi
 	fi
 	if [ -e "./nvim" ]; then
-		dprint "拷贝配置文件. . ."
+		dprint "拷贝配置文件. . .\n"
 		if [ -e "${home}/.config/nvim" ]; then
 			rm -r ${home}/.config/nvim && cp -r ./nvim "${home}/.config/"
 		else
@@ -317,26 +319,30 @@ function menu_config_nvim() {
 		eprint "配置文件丢失，停止配置. . .\n"
 		return 4
 	fi
-	dprint "将在5s打开neovim安装插件并启用，第一次启动会提示模块加载失败，请忽略！\n"
+	dprint "将在5s后打开neovim安装插件并启用！\n"
 	dprint "如果下载插件出现问题，请在之后打开neovim后普通模式下手动执行[:PlugInstall]来安装插件！\n"
 	sleep 5
 	nvim -c ":PlugInstall" -c ":qa"
 	sprint "插件安装完成！\n"
+	lsp_server=" "
 	dprint "是否安装C/C++ LSP Server 用作代码补全(是[Y/y]，否[N/n]<默认>): "
 	read flag
 	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
-		nvim -c ":MasonInstall clangd" -c ":qa"
+		lsp_server="${lsp_server} clangd"
 	fi
 	dprint "是否安装Lua LSP Server(是[Y/y]<默认>，否[N/n]): "
 	read flag
 	if [[ "$flag" != "N" && "$flag" != "n" ]]; then
-		nvim -c ":MasonInstall lua-language-server" -c ":qa"
+		lsp_server="${lsp-server} lua-language-server"
 	fi
 	dprint "是否安装Rust LSP Server(是[Y/y]，否[N/n]<默认>): "
 	read flag
 	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
-		nvim -c ":MasonInstall rust-analyzer" -c ":qa"
+		lsp_server="${lsp_server} rust-analyzer"
 	fi
+	sprint "即将打开nvim安装LSP Server，你需要等待安装完成后输入[:qa]来退出nvim继续执行脚本！\n"
+	sleep 3s
+	nvim -c ":MasonInstall ${lsp_server}"
 	lsp_bin="${home}/.local/share/nvim/mason/bin"
 	if [ -e "${home}/.bashrc" ]; then
 		dprint "将LSP Server添加到环境变量. . .\n"
