@@ -315,11 +315,29 @@ function menu_config_nvim() {
 	dprint "如果下载插件出现问题，请在之后打开neovim后普通模式下手动执行[:PlugInstall]来安装插件！\n"
 	sleep 5
 	nvim -c ":PlugInstall" -c ":qa"
-	sprint "安装完成！\n"
+	sprint "插件安装完成！\n"
+	dprint "是否安装C/C++ LSP Server 用作代码补全(是[Y/y]，否[N/n]<默认>): "
+	read flag
+	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
+		nvim -c ":MasonInstall clangd" -c ":qa"
+	fi
+	dprint "是否安装Lua LSP Server(是[Y/y]<默认>，否[N/n]): "
+	read flag
+	if [[ "$flag" != "N" && "$flag" != "n" ]]; then
+		nvim -c ":MasonInstall lua-language-server" -c ":qa"
+	fi
+	dprint "是否安装Rust LSP Server(是[Y/y]，否[N/n]<默认>): "
+	read flag
+	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
+		nvim -c ":MasonInstall rust-analyzer" -c ":qa"
+	fi
+	sprint "LSP Server安装完成，你可以在普通模式下使用[:Mason]查看更多信息！\n"
+	sprint "====================================================\n"
 	sprint "所有配置文件在[${home}/.config/nvim/lua/]文件夹下\n"
 	sprint "基础配置[basic.lua]，快捷键配置[keybingings.lua]\n"
 	sprint "插件安装[plugins.lua]，插件配置[plugin-config.lua + plugins/*.lua]\n"
 	sprint "LSP配置[lsp/init.lua + lsp/<lsp-client>.lua]\n"
+	sprint "====================================================\n"
 	return 0
 }
 

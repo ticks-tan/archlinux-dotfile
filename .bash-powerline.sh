@@ -6,7 +6,8 @@
 __powerline() {
     # Colors
     COLOR_RESET='\[\033[m\]'
-    COLOR_CWD=${COLOR_CWD:-'\[\033[38;2;254;195;157m\]'} # 黄色
+	COLOR_USR=${COLOR_USR:-'\[\033[38;2;237;123;53m\]'} # 橙色
+    COLOR_CWD=${COLOR_CWD:-'\[\033[38;2;144;121;237m\]'} # 紫色
     COLOR_GIT=${COLOR_GIT:-'\[\033[38;2;101;163;240m\]'} # 蓝色
     COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[38;2;145;196;108m\]'} # green
     COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[38;2;252;67;73m\]'} # red
@@ -69,7 +70,10 @@ __powerline() {
             local symbol="$COLOR_FAILURE $PS_SYMBOL $COLOR_RESET"
         fi
 
-        local cwd="$COLOR_CWD\w$COLOR_RESET"
+		local time="[\A]"
+		local usr="$COLOR_USR\u: $COLOR_RESET"
+
+        local cwd="$COLOR_CWD\W$COLOR_RESET"
         # Bash by default expands the content of PS1 unless promptvars is disabled.
         # We must use another layer of reference to prevent expanding any user
         # provided strings, which would cause security issues.
@@ -83,7 +87,7 @@ __powerline() {
             local git="$COLOR_GIT$(__git_info)$COLOR_RESET"
         fi
 
-        PS1="$cwd$git$symbol"
+        PS1="$time$usr$cwd$git$symbol"
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
