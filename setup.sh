@@ -97,7 +97,7 @@ function show_menu() {
 	echo ">> 2. 安装bash-powerline终端PS显示(简洁好看)."
 	echo ">> 3. 配置nvim(美化+LSP)."
 	echo ">> 4. 配置有用的命令别名."
-	echo ">> 99. 更新工具(git fetch)."
+	echo ">> 99. 更新工具(git pull)."
 	echo ">> 0. 退出脚本."
 	echo ">> 当前工作目录：$(pwd)."
 	echo "========================================"
@@ -340,8 +340,9 @@ function menu_config_nvim() {
 	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
 		lsp_server="${lsp_server} rust-analyzer"
 	fi
-	sprint "即将打开nvim安装LSP Server，你需要等待安装完成后输入[:qa]来退出nvim继续执行脚本！\n"
-	sleep 3s
+	wprint "将在7s打开nvim安装LSP Server，你需要等待安装完成后输入[:qa]来退出nvim继续执行脚本！\n"
+	wprint "第一次打开文件会提示错误，请忽略！\n"
+	sleep 7s
 	nvim -c ":MasonInstall ${lsp_server}"
 	lsp_bin="${home}/.local/share/nvim/mason/bin"
 	if [ -e "${home}/.bashrc" ]; then
@@ -380,14 +381,15 @@ function menu_config_alias() {
 		return 2
 	fi
 	grep -w -q "source .*\.command-alias.sh" "${home}/.bashrc" || echo -e "# config alias\nsource ${home}/.command-alias.sh" >> ${home}/.bashrc
-	sprint "配置完成！\n"
+	sprint "配置完成，别名如下：\n"
+	cat ${home}/.command-alias.sh
 	return 0
 }
 
 # 更新工具
 function menu_update() {
-	dprint "执行 git fetch . . .\n"
-	if ! git fetch ; then
+	dprint "执行 git pull . . .\n"
+	if ! git pull ; then
 		eprint "更新失败×_×！\n"
 		return 1
 	fi
