@@ -7,7 +7,7 @@ vim.cmd[[colorscheme tokyonight-storm]]
 -- 目录树(nvim-tree)
 require('plugins.nvim-tree')
 -- tab栏(bufferline)
-require('plugins.nvim-bufferline')
+require('plugins.nvim-barbar')
 -- 加载状态栏
 require('plugins.lualine')
 -- 区间高亮

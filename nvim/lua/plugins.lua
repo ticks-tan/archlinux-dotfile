@@ -15,8 +15,8 @@ Plug 'kyazdani42/nvim-tree.lua'
 -- 命令行选择多行时高亮显示
 Plug 'winston0410/cmd-parser.nvim'
 Plug 'winston0410/range-highlight.nvim'
--- nvim buffer tab (like vscode)
-Plug('akinsho/bufferline.nvim', { tag = 'v2.*' })
+-- nvim tab line
+Plug 'romgrk/barbar.nvim'
 -- 快速替换
 Plug 'tpope/vim-surround'
 -- 括号补全
@@ -36,7 +36,7 @@ Plug 'williamboman/mason.nvim'
 -- Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 -- 底部状态栏
-Plug 'nvim-lualine/lualine.nvim'
+-- Plug('romgrk/barbar.nvim', { branch = 'fix/303' })
 -- 主题(tokyonight)
 Plug('folke/tokyonight.nvim', { branch = 'main' })
 -- 类似vscode的项目编译方案

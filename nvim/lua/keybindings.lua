@@ -43,8 +43,10 @@ nmap('<A-k>', '<C-w>k')		-- 移动到上边屏幕
 nmap('<A-j>', '<C-w>j')		-- 移动到下边屏幕
 -- 插件快捷键
 nmap('<A-t>', ':NvimTreeToggle<CR>')	-- 切换显示目录树
-nmap('<C-h>', ':BufferLineCyclePrev<CR>')	-- bufferline向前切换(循环，可鼠标点击)
-nmap('<C-l>', ':BufferLineCycleNext<CR>')	-- bufferline向后切换(循环，可鼠标点击)
+nmap('<C-l>', ':BufferPrevious<CR>')	-- Tab向前切换(循环，可鼠标点击)
+nmap('<C-h>', ':BufferNext<CR>')		-- Tab向后切换(循环，可鼠标点击)
+nmap('<C-c>', ':BufferClose<CR>')		-- 关闭当前Tab
+
 
 local keyBind = {}
 
