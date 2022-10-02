@@ -307,7 +307,12 @@ function menu_config_nvim() {
 	fi
 	if [ -e "./nvim" ]; then
 		dprint "拷贝配置文件. . ."
-		rm -r ${home}/.config/nvim && cp -r ./nvim ${home}/.config/
+		if [ -e "${home}/.config/nvim" ]; then
+			rm -r ${home}/.config/nvim && cp -r ./nvim "${home}/.config/"
+		else
+			dprint "创建配置文件目录. . .\n"
+			mkdir -p "${home}/.config/nvim" && cp -r ./nvim "${home}/.config/"
+		fi
 	else
 		eprint "配置文件丢失，停止配置. . .\n"
 		return 4
