@@ -96,7 +96,8 @@ function show_menu() {
 	echo ">> 1. 安装PowerLine字体(可以显示图标字符，避免某些插件不能显示)."
 	echo ">> 2. 安装bash-powerline终端PS显示(简洁好看)."
 	echo ">> 3. 配置nvim(美化+LSP)."
-	echo ">> 4. 更新工具(git fetch)."
+	echo ">> 4. 配置有用的命令别名."
+	echo ">> 99. 更新工具(git fetch)."
 	echo ">> 0. 退出脚本."
 	echo ">> 当前工作目录：$(pwd)."
 	echo "========================================"
@@ -341,8 +342,33 @@ function menu_config_nvim() {
 	return 0
 }
 
+# 设置别名
+function menu_config_alias() {
+	if [ ! -e "./.command-alias.sh" ]; then
+		eprint "未发现别名文件，跳过配置！\n"
+		return 1
+	fi
+	if [ -e "${home}/.command-alias.sh" ]; then
+		wprint "发现已有别名文件，是否替换(是[Y/y]，否(N/n)<默认>): "
+		read flag
+		if [[ "$flag" != "Y" && "$flag" != "y" ]]; then
+			wprint "你选择不替换，跳过配置！\n"
+			return 0
+		fi
+	fi
+	sprint "拷贝配置文件. . .\n"
+	if ! cp ./.command-alias.sh ${home}/ ; then
+		eprint "拷贝配置文件失败！\n"
+		return 2
+	fi
+	grep -w -q "source .*\.command-alias.sh" "${home}/.bashrc" || echo -e "# config alias\nsource ${home}/.command-alias.sh" >> ${home}/.bashrc
+	sprint "配置完成！\n"
+	return 0
+}
+
 # 更新工具
 function menu_update() {
+	dprint "执行 git fetch . . .\n"
 	if ! git fetch ; then
 		eprint "更新失败×_×！\n"
 		return 1
@@ -397,6 +423,8 @@ do
 	elif [ "$flag" == "3" ]; then
 		menu_config_nvim
 	elif [ "$flag" == "4" ]; then
+		menu_config_alias
+	elif [ "$flag" == "99" ]; then
 		menu_update
 	else
 		eprint "输入错误\n"
