@@ -332,6 +332,13 @@ function menu_config_nvim() {
 	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
 		nvim -c ":MasonInstall rust-analyzer" -c ":qa"
 	fi
+	lsp_bin="${home}/.local/share/nvim/mason/bin"
+	if [ -e "${home}/.bashrc" ]; then
+		dprint "将LSP Server添加到环境变量. . .\n"
+		grep -w -q "export PATH=.*\.local/share/nvim/mason/bin" "${home}/.bashrc" || echo "# set mason lsp server\nexport PATH=\$PATH:${lsp_bin}" >> "${home}/.bashrc"
+	else
+		wprint "未发现bashrc文件，无法添加，你可以稍后自行将[$lsp_bin]添加到环境变量！\n"
+	fi
 	sprint "LSP Server安装完成，你可以在普通模式下使用[:Mason]查看更多信息！\n"
 	sprint "====================================================\n"
 	sprint "所有配置文件在[${home}/.config/nvim/lua/]文件夹下\n"
