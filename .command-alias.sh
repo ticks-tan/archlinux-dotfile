@@ -10,7 +10,7 @@ alias vi='vim'
 # -- git status 简化
 alias git-status='git status -sb'
 # -- git log 美化
-alias git-log="git log --all --graph --pretty=format:'%Cgreen%h%Creset - %C(yellow)%s%Creset%n          <%cn %ce> %Cgreen%cr%Creset"
+alias git-log="git log --all --graph --pretty=format:'%Cgreen%h%Creset - %C(yellow)%s%Creset%n          <%cn %ce> %Cgreen%cr%Creset'"
 # -- wget 支持断点下载
 alias wget='wget -c'
 # -- 使用openssl产生指定位数的随机密码
