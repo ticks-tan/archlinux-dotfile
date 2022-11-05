@@ -4,10 +4,12 @@
 shell=/bin/bash
 ## 用户根目录
 home=$HOME
+## 包管理工具
+pm_tool="pacman"
 ## 包安装命令(后有空格!)
-pm_install="apt-get -y install "
+pm_install="pacman -S "
 ## 包卸载工具
-pm_uninstall="apt-get purge "
+pm_uninstall="pacman -Rns "
 ## 编译nvim前置软件包，详情可到 
 ## [https://github.com/neovim/neovim/wiki/Installing-Neovim#install-from-source]
 ## 查看
@@ -333,21 +335,21 @@ function menu_config_nvim() {
 	dprint "是否安装Lua LSP Server(是[Y/y]<默认>，否[N/n]): "
 	read flag
 	if [[ "$flag" != "N" && "$flag" != "n" ]]; then
-		lsp_server="${lsp-server} lua-language-server"
+		lsp_server="${lsp_server} lua-language-server"
 	fi
 	dprint "是否安装Rust LSP Server(是[Y/y]，否[N/n]<默认>): "
 	read flag
 	if [[ "$flag" == "Y" || "$flag" == "y" ]]; then
 		lsp_server="${lsp_server} rust-analyzer"
 	fi
-	wprint "将在7s打开nvim安装LSP Server，你需要等待安装完成后输入[:qa]来退出nvim继续执行脚本！\n"
+	wprint "将在7s打开nvim安装LSP Server，务必等待安装完成后输入[:qa]来退出nvim继续执行脚本！\n"
 	wprint "第一次打开文件会提示错误，请忽略！\n"
 	sleep 7s
 	nvim -c ":MasonInstall ${lsp_server}"
 	lsp_bin="${home}/.local/share/nvim/mason/bin"
 	if [ -e "${home}/.bashrc" ]; then
 		dprint "将LSP Server添加到环境变量. . .\n"
-		grep -w -q "export PATH=.*\.local/share/nvim/mason/bin" "${home}/.bashrc" || echo "# set mason lsp server\nexport PATH=\$PATH:${lsp_bin}" >> "${home}/.bashrc"
+		grep -w -q "export PATH=.*\.local/share/nvim/mason/bin" "${home}/.bashrc" || echo -e "# set mason lsp server\nexport PATH=\$PATH:${lsp_bin}" >> "${home}/.bashrc"
 	else
 		wprint "未发现bashrc文件，无法添加，你可以稍后自行将[$lsp_bin]添加到环境变量！\n"
 	fi
@@ -403,10 +405,12 @@ function menu_update() {
 function nvim_version_check() {
 	version=$(nvim --version | grep NVIM | awk -Fv '{ print $2 }')
 	if [ "v${version}" != "v" ]; then
-		if [ "$(echo "${version} ${1}" | tr " " "\n" | sort -rV | head -n 1)" != "$1" ]; then
+		if [ "$(echo "${version} ${1}" | tr " " "\n" | sort -V | head -n 1)" != "$1" ]; then
 			eprint "当前neovim版本为: ${version}，要求最低版本号为：${1}\n"
 			return 1
 		fi
+	else
+		return 1
 	fi
 	return 0
 }
@@ -415,8 +419,8 @@ function nvim_version_check() {
 cd "$(dirname ${0})"
 
 ## 检查包管理工具
-if ! check_cmd apt ; then
-	wprint "检测到系统似乎没有使用 apt 作为包管理工具！\n"
+if ! check_cmd ${pm_tool} ; then
+	wprint "检测到系统似乎没有使用 ${pm_tool} 作为包管理工具！\n"
 	dprint ">> 请输入系统包管理工具安装命令(default:${pm_install})："
 	read pm_install
 	dprint ">> 请输入系统包管理工具卸载命令(default:${pm_uninstall}): "
