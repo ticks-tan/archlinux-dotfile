@@ -60,7 +60,7 @@ end
 local cap = Load_Module('cmp_nvim_lsp')
 local lsp = Load_Module('lspconfig')
 if cap and lsp then
-	cap = cap.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+	cap = cap.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 	-- 设置clangd
 	require('lsp/clangd').nvimcmp(lsp, cap)
 	-- 设置rust
