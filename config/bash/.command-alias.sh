@@ -3,7 +3,7 @@
 ## Linux命令别名设置
 # -- ls 简化
 alias ls='ls --color=auto'
-alias ll='ls -al --color=auto'
+alias ll='ls -ahl --color=auto'
 # -- 不要使用vi
 alias vi='vim'
 
