@@ -4,16 +4,18 @@
 #POWERLINE_GIT=0
 
 __powerline() {
-    # Colors
+    # reset color
     COLOR_RESET='\[\033[m\]'
-	COLOR_USR=${COLOR_USR:-'\[\033[38;2;237;123;53m\]'} # 橙色
-    COLOR_CWD=${COLOR_CWD:-'\[\033[38;2;144;121;237m\]'} # 紫色
-    COLOR_GIT=${COLOR_GIT:-'\[\033[38;2;101;163;240m\]'} # 蓝色
-    COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[38;2;145;196;108m\]'} # green
-    COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[38;2;252;67;73m\]'} # red
+	COLOR_TIME=${COLOR_TIME:-'\[\033[38;2;168;184;232m\]'} # 时间颜色
+	COLOR_USR=${COLOR_USR:-'\[\033[38;2;237;123;53m\]'} # 用户名颜色
+    COLOR_CWD=${COLOR_CWD:-'\[\033[38;2;144;121;237m\]'} # 命令行颜色
+    COLOR_GIT=${COLOR_GIT:-'\[\033[38;2;101;163;240m\]'} # git颜色
+    COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[38;2;145;196;108m\]'} # 命令执行成功
+    COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[38;2;252;67;73m\]'} # 命令执行失败
 
     # Symbols
-    SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-[B]}
+    SYMBOL_GIT_BRANCH1=${SYMBOL_GIT_BRANCH1:-[}
+	SYMBOL_GIT_BRANCH2=${SYMBOL_GIT_BRANCH2:-]}
     SYMBOL_GIT_MODIFIED=${SYMBOL_GIT_MODIFIED:-[M]}
     SYMBOL_GIT_PUSH=${SYMBOL_GIT_PUSH:-↑}
     SYMBOL_GIT_PULL=${SYMBOL_GIT_PULL:-↓}
@@ -36,7 +38,7 @@ __powerline() {
 
         if [[ -n "$ref" ]]; then
             # prepend branch symbol
-            ref=$SYMBOL_GIT_BRANCH$ref
+            ref=$SYMBOL_GIT_BRANCH1$ref$SYMBOL_GIT_BRANCH2
         else
             # get tag name or short unique hash
             ref=$($git_eng describe --tags --always 2>/dev/null)
@@ -58,7 +60,7 @@ __powerline() {
         done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
 
         # print the git branch segment without a trailing newline
-        printf " $ref$marks"
+        printf "\nGit:$ref$marks"
     }
 
     ps1() {
@@ -70,7 +72,7 @@ __powerline() {
             local symbol="$COLOR_FAILURE $PS_SYMBOL $COLOR_RESET"
         fi
 
-		local time="[\A]"
+		local time="$COLOR_TIME[\A]$COLOR_RESET"
 		local usr="$COLOR_USR\u: $COLOR_RESET"
 
         local cwd="$COLOR_CWD\W$COLOR_RESET"

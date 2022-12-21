@@ -1,0 +1,99 @@
+{
+	"position": "top",
+	"ipc": true,
+	"modules-left": ["custom/launcher", "sway/workspaces", "tray"],
+	"modules-center": [],
+	"modules-right": ["network", "pulseaudio", "backlight", "battery", "clock"],
+	// Modules configuration
+	// WorkSpace
+	"sway/workspaces": {
+		"disable-scroll": true,
+		"all-outputs": true,
+		"active-only": false,
+		"sort-by-number": true,
+		"format": "{icon}",
+		"persistent_workspaces": {
+			"1": [],
+			"2": [],
+	 		"3": [],
+	 		"4": [],
+		 	"5": [],
+	 		"6": []
+		},
+        	"format-icons": {
+			"1": "",
+			"2": "",
+			"3": "",
+			"4": "",
+			"5": "",
+			"6": "",
+        		"default": "○",
+        		"urgent": "◉",
+        		"focused": "●",
+			"active": "◉"
+		}
+	},
+	// Tray Bete!
+	"tray": {
+		"icon-size": 20,
+		"spacing": 10
+	},
+	// Clock
+	"clock": {
+		"format": "<span foreground='#C6AAE8'> </span>{:%H:%M}",
+        	"tooltip-format": "<big>{:%Y %m}</big>\n<tt><small>{calendar}</small></tt>"
+	},
+	// Battery
+	"battery": {
+		"states": {
+			"warning": 20,
+			"critical": 10
+		},
+		"format": "<span size='13000' foreground='#B1E3AD'>{icon}</span> {capacity}%",
+		"format-warning": "<span size='13000' foreground='#B1E3AD'>{icon}</span> {capacity}%",
+		"format-critical": "<span size='13000' foreground='#E38C8F'>{icon}</span> {capacity}%",
+		"format-charging": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+		"format-plugged": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+		"format-alt": "<span size='13000' foreground='#B1E3AD'>{icon}</span> {time}",
+		"format-full": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+        	"format-icons": ["", "", "", "", ""],
+		"tooltip-format": "{time}"
+	},
+	// Network
+	"network": {
+		"format-wifi": "<span size='13000' foreground='#F2CECF'> </span>{bandwidthDownBytes} | {bandwidthUpBytes}",
+		"format-ethernet": "<span size='13000' foreground='#F2CECF'> </span> Disconnected",
+        	"format-linked": "{ifname} (No IP) ",
+        	"format-disconnected": "<span size='13000' foreground='#F2CECF'> </span> No Network",
+		"tooltip-format-wifi": "{essid}: {signalStrength}%"
+	},
+	// PulseAudio
+	"pulseaudio": {
+		"scroll-step": 1,
+		"on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+		"on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +1%",
+		"on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -1%",
+		"format": "<span size='13000' foreground='#EBDDAA'>{icon}</span> {volume}%",
+		"format-muted": "<span size='14000' foreground='#EBDDAA'>{icon}</span> Muted",
+		"format-icons": {
+			"headphone": "",
+			"hands-free": "",
+			"headset": "",
+			"phone": "",
+			"portable": "",
+			"car": "",
+			"default": ["", ""]
+        	}
+    	},
+	"backlight": {
+		"device": "amdgpu_bl0",
+		"format": "<span size='13000' foreground='#F2CECF'> </span>{percent}%",
+		"on-scroll-up": "brightnessctl set 1%+ > /dev/null 2>&1",
+		"on-scroll-down": "brightnessctl set 1%- > /dev/null 2>&1",
+		"scroll-step": 1
+	},
+	"custom/launcher": {
+		"format": "<span size='13000' foreground='#EBDDAA'></span>",
+		"on-click": "bash ~/.config/waybar/bin/applaunch.sh > /dev/null 2>&1"
+	}
+}

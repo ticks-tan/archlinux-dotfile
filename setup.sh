@@ -30,10 +30,12 @@ MROOT=`get_real_path`
 ## 显示菜单
 function show_menu() {
 	echo "=========== ArchLinux Dotfile =========="
-	echo ">> 1. 安装PowerLine字体(可以显示图标字符，避免某些插件不能显示) <Linux>"
+	echo ">> 1. 安装字体(Powerline Maple) <Linux>"
 	echo ">> 2. 美化终端PS显示 <Linux bash>"
 	echo ">> 3. 配置nvim(美化+LSP) <Linux>"
 	echo ">> 4. 配置有用的命令别名 <Linux>"
+	echo ">> 5. 配置sway <ArchLinux>"
+	echo ">> 6. 配置终端alacritty <Linux>"
 	echo ">> 99. 更新工具(git pull)"
 	echo ">> 0. 退出脚本"
 	echo ">> 当前工作目录：`get_real_path`"
@@ -70,8 +72,9 @@ function check_prepare() {
 	return 0
 }
 
+
 ## 安装 PowerLine 字体
-function menu_powerline_font() {
+function install_powerline_font() {
 	if [ -e "${MROOT}/tmp/powerline-font" ]; then
 		dprint ">> 检查到缓存文件，跳过下载！\n"
 		if [ -e "${MROOT}/tmp/powerline_font/installed.txt" ]; then
@@ -101,8 +104,18 @@ function menu_powerline_font() {
 	return 1
 }
 
-## 安装 bash-powerline
-function menu_bash_powerline() {
+function menu_config_fonts()
+{
+	dprint ">> 安装Powerline字体"
+	install_powerline_font
+
+	dprint ">> 安装Maple字体"
+
+}
+
+
+## 安装 bash-ps1
+function menu_bash_ps1() {
 	if [ -e "${home}/.bash-ps1.sh" ]; then
 		wprint ">>> 已安装bash-ps1，跳过安装！\n"
 		return 0
@@ -122,6 +135,27 @@ function menu_bash_powerline() {
 
 ## 配置nvim
 source ./scripts/set_nvim.sh
+
+## 配置 sway
+source ./scripts/sway.sh
+
+## 配置 Alacritty
+function menu_config_alacritty()
+{
+	dprint ">> 开始配置Alacritty"
+	if [ ! -e "${MROOT}/config/alacritty/alacritty.yml" ]; then
+		eprint ">>> 配置文件丢失，停止配置"
+		return 1
+	fi
+	if [ -e "${home}/.config/alacritty/alacritty.yml" ]; then
+		wprint ">>> 发现本地配置文件，开始备份"
+		cp ${home}/.config/alacritty/alacritty.yml ${home}/.config/alacritty/alacritty.yml.bak
+	fi
+	mkdir -p ${home}/.config/alacritty
+	cp ${MROOT}/config/alacritty/alacritty.yml ${home}/.config/alacritty/
+	sprint ">> 配置完成！"
+	return 0
+}
 
 # 设置别名
 function menu_config_alias() {
@@ -188,13 +222,17 @@ do
 	if [ "$flag" == "0" ]; then
 		break
 	elif [ "$flag" == "1" ]; then
-		menu_powerline_font
+		menu_config_fonts
 	elif [ "$flag" == "2" ]; then
-		menu_bash_powerline
+		menu_bash_ps1
 	elif [ "$flag" == "3" ]; then
 		menu_config_nvim
 	elif [ "$flag" == "4" ]; then
 		menu_config_alias
+	elif [ "$flag" == "5" ]; then
+		menu_config_sway
+	elif [ "$flag" == "6" ]; then
+		menu_config_alacritty
 	elif [ "$flag" == "99" ]; then
 		menu_update
 	else
